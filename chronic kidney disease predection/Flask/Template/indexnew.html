@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chronic Kidney Disease Prediction</title>
+  <link rel="stylesheet" href="css/style.css"> <!-- Link to external CSS file for styling -->
+  <script src="js/script.js"></script> <!-- Link to external JavaScript file for form submission and result display -->
+</head>
+<body>
+  <h1>Chronic Kidney Disease Prediction</h1>
+  <form id="prediction-form">
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" required>
+    <br>
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender" required>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+    <br>
+    <label for="blood-pressure">Blood Pressure (mm Hg):</label>
+    <input type="number" id="blood-pressure" name="blood-pressure" required>
+    <br>
+    <label for="specific-gravity">Specific Gravity:</label>
+    <input type="number" id="specific-gravity" name="specific-gravity" step="0.01" required>
+    <br>
+    <label for="albumin">Albumin (g/dL):</label>
+    <input type="number" id="albumin" name="albumin" step="0.01" required>
+    <br>
+    <label for="sugar">Sugar (g/dL):</label>
+    <input type="number" id="sugar" name="sugar" step="0.01" required>
+    <br>
+    <!-- Add additional input fields for other relevant features used in your prediction model -->
+    <input type="submit" value="Predict">
+  </form>
+  <div id="prediction-result"></div>
+
+  <script>
+    // JavaScript code for handling form submission and result display
+    document.getElementById("prediction-form").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent form submission
+      // Get form data
+      var age = document.getElementById("age").value;
+      var gender = document.getElementById("gender").value;
+      var bloodPressure = document.getElementById("blood-pressure").value;
+      var specificGravity = document.getElementById("specific-gravity").value;
+      var albumin = document.getElementById("albumin").value;
+      var sugar = document.getElementById("sugar").value;
+      // Perform prediction logic using the form data
+      // Display prediction result in the "prediction-result" div
+      var predictionResult = "This is where the prediction result will be displayed";
+      document.getElementById("prediction-result").innerHTML = predictionResult;
+    });
+  </script>
+</body>
+</html>

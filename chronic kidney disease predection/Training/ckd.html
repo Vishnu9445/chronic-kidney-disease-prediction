@@ -1,0 +1,275 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+import warnings
+warnings.filterwarnings('ignore')
+plt.style.use('fivethirtyeight')
+%matplotlib inline
+pd.set_option('display.max_columns', 26)
+
+data = pd.read_csv('kidney_disease.csv')
+data.head()
+data.drop('id', axis = 1, inplace = True)
+data.columns = ['age',
+                'blood_pressure',
+                'specific_gravity',
+                'albumin',
+                'sugar',
+                'red_blood_cells',
+                'pus_cell',
+                'pus_cell_clumps',
+                'bacteria',
+                'blood_glucose_random',
+                'blood_urea',
+                'serum_creatinine',
+                'sodium',
+                'potassium',
+                'haemoglobin',
+                'packed_cell_volume',
+                'white_blood_cell_count',
+                'red_blood_cell_count',
+                'hypertension',
+                'diabetes_mellitus',
+                'coronary_artery_disease',
+                'appetite',
+                'peda_edema',
+                'aanemia',
+                'class'
+               ]
+data.head()
+data.describe()
+data.info()
+data.isnull().any()
+data['packed_cell_volume']     = pd.to_numeric(data['packed_cell_volume']    , errors='coerce')
+data['white_blood_cell_count'] = pd.to_numeric(data['white_blood_cell_count'], errors='coerce')
+data['red_blood_cell_count']   = pd.to_numeric(data['red_blood_cell_count']  , errors='coerce')
+
+data.info()
+data.isnull().any() 
+
+data['blood_glucose_random'].fillna(data['blood_glucose_random'].mean(),inplace=True)
+data['blood_pressure'].fillna(data['blood_pressure'].mean(),inplace=True)
+data['blood_urea'].fillna(data['blood_urea'].mean(),inplace=True) 
+data['haemoglobin'].fillna(data['haemoglobin'].mean(),inplace=True)
+data['packed_cell_volume'].fillna(data['packed_cell_volume'].mode()[0],inplace=True)
+data['potassium'].fillna(data['potassium'].mean(),inplace=True)
+data['red_blood_cell_count'].fillna(data['red_blood_cell_count'].mode()[0],inplace=True)
+data['serum_creatinine'].fillna(data['serum_creatinine'].mean(),inplace=True)
+data['sodium'].fillna(data['sodium'].mean(),inplace=True)
+data['white_blood_cell_count'].fillna(data.median())
+
+data['age'].fillna(data['age'].mode()[0],inplace=True)
+data['hypertension'].fillna(data['hypertension'].mode()[0],inplace=True)
+data['pus_cell_clumps'].fillna(data['pus_cell_clumps'].mode()[0],inplace=True)
+data['appetite'].fillna(data['appetite'].mode()[0],inplace=True)
+data['albumin'].fillna(data['albumin'].mode()[0], inplace=True) 
+data['pus_cell'].fillna(data['pus_cell'].mode()[0],inplace=True)
+data['red_blood_cells'].fillna(data['red_blood_cells'].mode()[0],inplace=True)
+data['coronary_artery_disease'].fillna(data['coronary_artery_disease'].mode()[0],inplace=True)
+data['bacteria'].fillna(data["bacteria"].mode()[0],inplace=True)
+data['aanemia'].fillna(data['aanemia'].mode()[0],inplace=True)
+data['sugar'].fillna(data['sugar'].mode()[0],inplace=True)
+data['diabetes_mellitus'].fillna(data['diabetes_mellitus'].mode()[0],inplace=True)
+data['peda_edema'].fillna(data['peda_edema'].mode()[0],inplace=True)
+data[ 'specific_gravity'].fillna(data[ 'specific_gravity'].mode()[0],inplace=True)
+
+catcols=set(data.dtypes[data.dtypes=='O'].index.values)
+
+for i in catcols:
+
+catcols.remove('red_blood_cell_count')
+catcols.remove('packed_cell_volume')
+#catcols.remove('white_blood_cell_count')
+print(catcols)
+ catcols=['aanemia','peda_edema','appetite','bacteria','class','coronary_artery_disease','diabetes_mellitus','hypertension','pus_cell','pus_cell_clumps','red_blood_cells']
+from sklearn.preprocessing import LabelEncoder
+for i in catcols:
+  print("LABEL ENCODING OF:",i)
+  LEi=LabelEncoder()
+  c=data[i]
+  print(c)
+  data[i]=LEi.fit_transform(data[i])
+  c=data[i]
+  print(c)
+  print("*"*100)
+contcols=set(data.dtypes[data.dtypes!='0'].index.values)
+print(contcols)
+for i in contcols:
+  print("Continous Columns :",i)
+  c=data[i]
+contcols.remove('specific_gravity')
+contcols.remove('albumin')
+contcols.remove('sugar')
+print(contcols)
+
+contcols.add('red_blood_cell_count')
+contcols.add('packed_cell_volume')
+contcols.add('white_blood_cell_count')
+print(catcols)
+
+catcols.add('specific_gravity')
+catcols.add('albumin')
+catcols.add('sugar')
+print(catcols)
+
+data['coronary_artery_disease']=data.coronary_artery_disease.replace('\tno','no')
+c(data['coronary_artery_disease'])
+
+data['diabetesmellitus']=data.diabetesmellitus.replace(to_replace={'\tno':'\tyes':'yes','yes':})
+c(data['diabetesmellitus'])
+
+data.describe()
+sns.distplot(data.age)
+import matplotlib.pyplot as plt
+fig=plt.figure(figsize=(5,5))
+plt.xlabel('age')
+plt.ylabel('blood pressure')
+plt.title("age vs blood scatter plot")
+
+plt.figure(figsize=(20,15),facecolor='white')
+plotnumber=1
+for column in contcols:
+  if plotnumber<=11:
+    ax=plt.subplot(3,4,plotnumber)
+    plt.scatter(data['age'],data[column])
+    plt.xlabel(column,fontsize=20)
+    plotnumber+=1
+    plt.show()
+f,ax=plt.subplots(figsize=(18,10))
+sns.heatmap(data.corr(),annot=True,fmt=".2f",ax=ax,linewidths=0.5,linecolor='orange')
+plt.xticks(rotation=45)
+plt.yticks(rotation=45)
+plt.show
+
+sns.countplot(data['class'])
+setcols=['red_blood_cells','pus_cell','blood_glucose_random','blood_urea','peda_edema','aanemia','diabetes_mellitus','coronary_artery_disease']
+x=pd.DataFrame(data,columns=setcols)
+y=pd.DataFrame(data,columns=['class'])
+print(x.shape)
+print(y.shape)
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=2)
+
+# Creating ANN skleton view
+classification = Sequential()
+classification.add(Dense (30, activation='relu')) 
+classification.add (Dense (128, activation='relu'))
+classification.add(Dense (64, activation='relu'))
+classification.add(Dense (32, activation='relu'))
+classification.add(Dense(1, activation='sigmoid'))
+
+from sklearn.ensemble import RandomForestClassifier
+rfc=RandomForestClassifier(n_estimators=10,criterion='entr
+
+from sklearn.ensemble import RandomForestClassifier
+rfc=RandomForestClassifier(n_estimators=10,criterion='entr
+y_predict_train = rfc.predict(x_train)
+ 	y_predict=dtc.predict(x_test)
+y_predict
+
+from sklearn.metrics import accuracy_score,classification_report
+y_predict=lgr.predict(x_test)
+#logistic Regression
+y_pred=lgr.predict([[1,1,121.000000,36.0,0,0,1,0]])
+print(y_pred)
+(y_pred)
+DecisionTree classifier
+y_pred=dtc.predict([[1,1,121.000000,36.0,0,0,1,0]])
+print(y_pred)
+(y_pred)
+#Random Forest Classifier
+y_pred=rfc.predict([[1,1,121.000000,36.0,0,0,1,0]])
+print(y_pred)
+(y_pred)
+classification.save("ckd.h5")
+def predict_exit(sample_value):
+  #convert list to numpy array
+  sample_value=np.array(sample_value)
+  #Reshape because sample_value contains only 1 record
+  sample_value=sample_value.reshape(1,-1)
+  #Feature scaling
+  sample_value=sc.transform(sample_value)
+  return classifier.predict(sample_value)
+  
+test=classification.predict([[1,1,121.000000,36.0,0,0,1,0]])
+if test==1:
+    print('prediction:High chance of CKD!')
+else:
+    print('prediction:Low chance of CKD.')
+dfs = [] 
+models = [
+          ('LogReg', LogisticRegression()),
+          ('RF', RandomForestClassifier()), 
+          ('DecisionTree', DecisionTreeClassifier()),
+         ]
+results=[]
+    names = [] 
+    scoring=['accuracy', 'precision_weighted', 'recall_weighted', 'f1_weighted', 'roc_auc']
+    target_names=['NO CKD', 'CKD']  
+    for name, model in models: 
+        kfold = model_selection.KFold(n_splits=5, shuffle=True, random_state=90210) 
+        cv_results = model_selection.cross_validate(model, x_train, y_train, cv=kfold,scoring=scoring)
+        clf = model.fit(x_train, y_train)
+        y_pred = clf.predict(x_test)
+        print(name)
+        print(classification_report(y_test,y_pred,target_names=target_names))
+        results.append(cv_results)
+        names.append(name) 
+        this_df = pd.DataFrame(cv_results) 
+        this_df['model']=name 
+        dfs.append(this_df)  
+final = pd.concat(dfs, ignore_index-True)
+return final
+#plotting confusion matrix
+plt.figure(figsize=(8,6))
+sns.heatmap(cm, cmap='Blues',annot=True, xticklabels=['no ckd','ckd'], yticklabels=['no ckd','ckd'])
+plt.xlabel('predicted values')
+plt.ylabel('Actual values')
+plt.title('confusion matrix for Logistic model')
+plt.show()
+#plotting confusion matrix
+plt.figure(figsize=(8,6))
+sns.heatmap(cm, cmap='Blues',annot=True,xticklabels=['no ckd','ckd'],yticklabels=['no ckd','ckd'])
+plt.xlabel('Predicted values')
+plt.ylabel('Actual values')
+plt.title('Confusion Matrix for RandomForestClassifier')
+plt.show()
+
+bootstraps = []
+for model in list(set(final.model.values)):
+    model_df=final.loc[final.model==model]
+    bootstrap=model_df.sample(n=30,replace=True)
+    bootstraps.append(bootstrap)
+
+bootstrap_df=pd.concat(bootstraps,ignore_index=True)
+result_long=pd.melt(bootstraps_df,id_vars=['model'],var_name='metrics',value_name='value')
+time_matrics=['fit_time','score_time']#fit time matrics
+## PERFORMANCE METRICS
+result_long_nofit=result_long.loc[result_long['metrics'].isin(time_matrics)]# get df without fit data
+result_long_nofit=result_long_nofit.sort_values(by='values')
+## TIME METRICS
+result_long_fit=result_long.loc[result_long['mrteics'].isin(time_metrics)]# df with fit data
+result_long_fit=result_long_fit.sort_values(by='values')
+
+bootstraps = []
+for model in list(set(final.model.values)):
+    model_df=final.loc[final.model==model]
+    bootstrap=model_df.sample(n=30,replace=True)
+    bootstraps.append(bootstrap)
+
+bootstrap_df=pd.concat(bootstraps,ignore_index=True)
+result_long=pd.melt(bootstraps_df,id_vars=['model'],var_name='metrics',value_name='value')
+time_matrics=['fit_time','score_time']#fit time matrics
+## PERFORMANCE METRICS
+result_long_nofit=result_long.loc[result_long['metrics'].isin(time_matrics)]# get df without fit data
+result_long_nofit=result_long_nofit.sort_values(by='values')
+## TIME METRICS
+result_long_fit=result_long.loc[result_long['mrteics'].isin(time_metrics)]# df with fit data
+result_long_fit=result_long_fit.sort_values(by='values')
+
+
+
+
